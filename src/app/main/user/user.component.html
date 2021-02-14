@@ -23,7 +23,7 @@
       <div class="x_title">
         <ul class="nav navbar-right panel_toolbox">
           <li>
-            <button class="btn btn-success" (click)="showAddModal(modalAddEdit)">Thêm mới</button>
+            <button *ngIf="_authenService.hasPermission('USER','create')" class="btn btn-success" (click)="showAddModal(modalAddEdit)">Thêm mới</button>
           </li>
         </ul>
         <div class="clearfix"></div>
@@ -59,9 +59,9 @@
               <td><img [src]="baseFolder + user.Avatar" class="img-responsive" width="128"></td>
               <td>{{user.Status}}</td>
               <td>
-                <button class="btn btn-primary" (click)="showEditModal(user.Id)"><i
+                <button *ngIf="_authenService.hasPermission('USER','update')" class="btn btn-primary" (click)="showEditModal(user.Id)"><i
                     class="fa fa-pencil-square-o"></i></button>
-                <button class="btn btn-danger" (click)="deleteItem(user.Id)"><i class="fa fa-trash"></i></button>
+                <button *ngIf="_authenService.hasPermission('USER','delete')" class="btn btn-danger" (click)="deleteItem(user.Id)"><i class="fa fa-trash"></i></button>
               </td>
             </tr>
           </tbody>

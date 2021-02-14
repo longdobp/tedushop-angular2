@@ -6,8 +6,8 @@
   <div class="title_right">
     <div class="col-md-5 col-sm-5 col-xs-12 form-group pull-right top_search">
       <div class="input-group">
-        <input type="text" class="form-control" name="filter" (keyup.enter)="loadData()" 
-               [(ngModel)]="filter" placeholder="Gõ tên quyền...">
+        <input type="text" class="form-control" name="filter" (keyup.enter)="loadData()" [(ngModel)]="filter"
+          placeholder="Gõ tên quyền...">
         <span class="input-group-btn">
           <button class="btn btn-default" (click)="loadData()" type="button">Tìm!</button>
         </span>
@@ -23,7 +23,8 @@
       <div class="x_title">
         <ul class="nav navbar-right panel_toolbox">
           <li>
-            <button class="btn btn-success" (click)="showAddModal()">Thêm mới</button>
+            <button *ngIf="_authenService.hasPermission('ROLE','create')" class="btn btn-success"
+              (click)="showAddModal()">Thêm mới</button>
           </li>
         </ul>
         <div class="clearfix"></div>
@@ -36,7 +37,7 @@
               <th>#</th>
               <th>Mã</th>
               <th>Tên</th>
-              <th></th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -45,8 +46,12 @@
               <td>{{role.Name}}</td>
               <td>{{role.Description}}</td>
               <td>
-                <button class="btn btn-primary" (click)="showEditModal(role.Id)"><i class="fa fa-pencil-square-o"></i></button>
-                <button class="btn btn-danger" (click)="deleteItem(role.Id)"><i class="fa fa-trash"></i></button>
+                <button class="btn btn-primary" *ngIf="_authenService.hasPermission('ROLE','update')"
+                  (click)="showEditModal(role.Id)">
+                  <i class="fa fa-pencil-square-o"></i></button>
+                <button class="btn btn-danger" *ngIf="_authenService.hasPermission('ROLE','delete')"
+                  (click)="deleteItem(role.Id)">
+                  <i class="fa fa-trash"></i></button>
               </td>
             </tr>
           </tbody>

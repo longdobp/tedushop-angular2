@@ -9,6 +9,9 @@ import * as moment from 'moment';
 import swal from 'sweetalert';
 import { UploadService } from '../../core/services/upload.service';
 import { SystemConstants } from '../../core/common/system.constant';
+import { AuthenService } from '../../core/services/authen.service';
+import { UtilityService } from '../../core/services/utility.service';
+
 
 @Component({
   selector: 'app-user',
@@ -30,7 +33,6 @@ export class UserComponent implements OnInit {
   public allRoles: IMultiSelectOption[] = [];
   public myRoles: string[] = [];
   public roles: any[];
-  public dropdownSettings = {};
 
   public dateOptions: any = {
     locale: { format: 'DD/MM/YYYY' },
@@ -47,8 +49,14 @@ export class UserComponent implements OnInit {
   constructor(
     private _dataService: DataService,
     private _notificationService: NotificationService,
-    private _uploadService: UploadService
-  ) { }
+    private _uploadService: UploadService,
+    private _utilityService: UtilityService,
+    public _authenService: AuthenService
+  ) { 
+    if (_authenService.checkAccess('USER') == false) {
+      _utilityService.navigateToLogin();
+    }
+  }
 
   ngOnInit() {
     this.loadData();
@@ -84,9 +92,11 @@ export class UserComponent implements OnInit {
     this._dataService.get('/api/appUser/detail/' + id)
       .subscribe((res: any) => {
         this.entity = res;
+        this.myRoles = [];
         for (let role of this.entity.Roles) {
           this.myRoles.push(role);
         }
+        console.log(res);
         this.entity.BirthDay = moment(new Date(this.entity.BirthDay)).format('DD/MM/YYYY');
       })
   }
@@ -129,6 +139,7 @@ export class UserComponent implements OnInit {
           this._notificationService.printSuccessMessage(MessageContstants.CREATED_OK_MSG);
         }, error => this._dataService.handleError(error));
     } else {
+      console.log(JSON.stringify(this.entity));
       this._dataService.put('/api/appUser/update', JSON.stringify(this.entity))
         .subscribe((res: any) => {
           this.loadData();

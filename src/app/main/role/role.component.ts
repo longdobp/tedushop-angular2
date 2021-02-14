@@ -4,6 +4,8 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 import { NotificationService } from 'app/core/services/notification.service';
 import { MessageContstants } from 'app/core/common/message.constant';
 import swal from 'sweetalert';
+import { UtilityService } from '../../core/services/utility.service';
+import { AuthenService } from '../../core/services/authen.service';
 
 declare var alertify: any;
 
@@ -26,7 +28,14 @@ export class RoleComponent implements OnInit {
 
   constructor(
     private _dataService: DataService,
-    private _notificationService: NotificationService) { }
+    private _notificationService: NotificationService,
+    private _utilityService: UtilityService,
+    public _authenService: AuthenService
+  ) {
+    if (_authenService.checkAccess('FUNCTION') == false) {
+      _utilityService.navigateToLogin();
+    }
+  }
 
   ngOnInit() {
     this.loadData();
@@ -87,7 +96,7 @@ export class RoleComponent implements OnInit {
     }
   }
 
-  deleteItem(id: any){
+  deleteItem(id: any) {
     swal(MessageContstants.CONFIRM_DELETE_MSG, {
       buttons: ["No", "Yes"],
     })
