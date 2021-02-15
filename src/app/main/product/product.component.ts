@@ -32,6 +32,7 @@ export class ProductComponent implements OnInit {
   public filterCategoryID: number;
   public products: any[];
   public productCategories: any[];
+  public CheckedItems: any[];
 
   constructor(
     public authenService: AuthenService,
@@ -80,7 +81,25 @@ export class ProductComponent implements OnInit {
   }
 
   public deleteMulti() {
+    this.CheckedItems = this.products.filter(x => x.Checked);
+    var checkedIds = [];
+    for (var i = 0; i < this.CheckedItems.length; ++i)
+      checkedIds.push(this.CheckedItems[i]["ID"]);
 
+    swal(MessageContstants.CONFIRM_DELETE_MSG, {
+      buttons: ["No", "Yes"]
+    })
+      .then((result) => {
+        if (result) {
+          this.dataService.delete('/api/product/deletemulti', 'checkedProducts', JSON.stringify(checkedIds))
+            .subscribe((res: any) => {
+              this.notificationService.printSuccessMessage(MessageContstants.DELETED_OK_MSG);
+              this.search();
+            }, error => this.dataService.handleError(error));
+        } else {
+          this.notificationService.printErrorMessage(MessageContstants.DELETED_CANCEL_MSG);
+        }
+      });
   }
 
   public showAdd() {
@@ -150,17 +169,18 @@ export class ProductComponent implements OnInit {
   public deleteItem(id: any) {
     swal(MessageContstants.CONFIRM_DELETE_MSG, {
       buttons: ["No", "Yes"],
-    }).then((result) => {
-      if (result) {
-        this.dataService.delete('/api/product/delete', 'id', id)
-          .subscribe((res: Response) => {
-            this.notificationService.printSuccessMessage(MessageContstants.DELETED_OK_MSG);
-            this.search();
-          }, error => this.dataService.handleError(error));
-      } else {
-        this.notificationService.printErrorMessage(MessageContstants.DELETED_CANCEL_MSG);
-      }
-    });
+    })
+      .then((result) => {
+        if (result) {
+          this.dataService.delete('/api/product/delete', 'id', id)
+            .subscribe((res: Response) => {
+              this.notificationService.printSuccessMessage(MessageContstants.DELETED_OK_MSG);
+              this.search();
+            }, error => this.dataService.handleError(error));
+        } else {
+          this.notificationService.printErrorMessage(MessageContstants.DELETED_CANCEL_MSG);
+        }
+      });
   }
 
   public keyupHandlerContentFunction(e: any) {
