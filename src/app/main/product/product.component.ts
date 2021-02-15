@@ -34,6 +34,12 @@ export class ProductComponent implements OnInit {
   public productCategories: any[];
   public CheckedItems: any[];
 
+  /*Product manage */
+  public imageEntity: any = {};
+  public productImages: any = [];
+  @ViewChild('imageManageModal') public imageManageModal: ModalDirective;
+  @ViewChild("imagePath") imagePath;
+
   constructor(
     public authenService: AuthenService,
     private dataService: DataService,
@@ -107,14 +113,6 @@ export class ProductComponent implements OnInit {
     this.addEditModal.show();
   }
 
-  public showImageManage() {
-
-  }
-
-  public showQuantityManage() {
-
-  }
-
   public showEdit(id: string) {
     this.dataService.get('/api/product/detail/' + id)
       .subscribe((res: any) => {
@@ -185,5 +183,58 @@ export class ProductComponent implements OnInit {
 
   public keyupHandlerContentFunction(e: any) {
     this.entity.Content = e;
+  }
+
+  public showImageManage(id: number) {
+    this.imageEntity = {
+      ProductId: id
+    };
+    this.loadProductImages(id);
+    this.imageManageModal.show();
+  }
+
+  public loadProductImages(id: number) {
+    this.dataService.get('/api/productImage/getall?productId=' + id)
+      .subscribe((res: any[]) => {
+        this.productImages = res;
+      }, error => this.dataService.handleError(error));
+  }
+
+  public saveProductImage(isValid: boolean) {
+    if (isValid) {
+      let fi = this.imagePath.nativeElement;
+      if (fi.files.length > 0) {
+        this.uploadService.postWithFile('/api/upload/saveImage?type=product', null, fi.files)
+          .then((imageUrl: string) => {
+            this.imageEntity.Path = imageUrl;
+            this.dataService.post('/api/productImage/add', JSON.stringify(this.imageEntity))
+              .subscribe((response: any) => {
+                this.loadProductImages(this.imageEntity.ProductId);
+                this.notificationService.printSuccessMessage(MessageContstants.CREATED_OK_MSG);
+              });
+          });
+      }
+    }
+  }
+
+  public deleteImage(id: number) {
+    swal(MessageContstants.CONFIRM_DELETE_MSG, {
+      buttons: ["No", "Yes"]
+    })
+      .then((result) => {
+        if (result) {
+          this.dataService.delete('/api/productImage/delete', 'id', id.toString())
+            .subscribe((response: any) => {
+              this.notificationService.printSuccessMessage(MessageContstants.DELETED_OK_MSG);
+              this.loadProductImages(this.imageEntity.ProductId);
+            }, error => this.dataService.handleError(error));
+        } else {
+          this.notificationService.printErrorMessage(MessageContstants.DELETED_CANCEL_MSG);
+        }
+      })
+  }
+
+  public showQuantityManage() {
+
   }
 }
