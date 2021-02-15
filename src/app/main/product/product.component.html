@@ -6,7 +6,7 @@
   <div class="title_right">
     <div class="col-md-4 col-sm-6 col-xs-12 form-group">
       <select class="form-control" name="filterCategoryID" [(ngModel)]="filterCategoryID" (change)="search()">
-        <option value="">--Chọn danh mục--</option>
+        <option [value]="null">--Chọn danh mục--</option>
         <option *ngFor="let x of productCategories" [value]="x.ID">{{x.Name}}</option>
       </select>
     </div>
@@ -17,8 +17,10 @@
     <div class="col-md-5 col-sm-6 col-xs-12 form-group">
       <button class="btn btn-primary" type="button" (click)="search()">Tìm</button>
       <button class="btn btn-default" type="button" (click)="reset()">Reset</button>
-      <button class="btn btn-danger" type="button" (click)="deleteMulti()">Xóa</button>
-
+      <button *ngIf="authenService.hasPermission('PRODUCT','delete')" class="btn btn-danger" type="button"
+        (click)="deleteMulti()">Xóa</button>
+      <button *ngIf="authenService.hasPermission('PRODUCT','create')" class="btn btn-success" (click)="showAdd()">Thêm
+        mới</button>
     </div>
 
   </div>
@@ -32,15 +34,15 @@
 
   <div class="x_panel">
     <div class="x_content">
-      <div class="x_title">
-        <ul class="nav navbar-right panel_toolbox">
+      <!-- <div class="x_title"> -->
+      <!-- <ul class="nav navbar-right panel_toolbox">
           <li>
             <button *ngIf="authenService.hasPermission('PRODUCT','create')" class="btn btn-success"
               (click)="showAdd()">Thêm mới</button>
           </li>
-        </ul>
-        <div class="clearfix"></div>
-      </div>
+        </ul> -->
+      <!-- <div class="clearfix"></div>
+      </div> -->
       <table *ngIf="products && products.length > 0" class="table table-bordered">
         <thead>
           <tr>
@@ -345,6 +347,94 @@
               <td>
                 <button class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Xóa số lượng"
                   (click)="deleteImage(image.ID)"><i class="fa fa-trash" aria-hidden="true"></i></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="ln_solid"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Quản lý số lượng sản phẩm-->
+<!--Quản lý số lượng-->
+<div bsModal #quantityManageModal="bs-modal" class="modal fade" tabindex="-1" role="dialog"
+  aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title pull-left">Quản lý số lượng sản phẩm</h4>
+        <button type="button" class="close pull-right" (click)="quantityManageModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal form-label-left input_mask" novalidate #quantityForm="ngForm"
+          (ngSubmit)="saveProductQuantity(quantityForm.valid)" *ngIf="quantityEntity">
+          <div class="form-group row">
+            <div class="col-xs-3">
+              <label>Màu sắc</label>
+              <select class="form-control" required #colorId="ngModel" name="colorId"
+                [(ngModel)]="quantityEntity.ColorId">
+                <option value="">--Chọn màu--</option>
+                <option *ngFor="let x of colors" [value]="x.ID">{{x.Name}}</option>
+              </select>
+              <input type="hidden" [(ngModel)]="quantityEntity.ProductId" name="productId" />
+
+              <small [hidden]="colorId.valid || (colorId.pristine && !quantityForm.submitted)" class="text-danger">
+                Bạn phải chọn màu sắc
+              </small>
+            </div>
+            <div class="col-xs-3">
+              <label>Cỡ</label>
+              <select class="form-control" required #sizeId="ngModel" name="sizeId" [(ngModel)]="quantityEntity.SizeId">
+                <option value="">--Chọn cỡ--</option>
+                <option *ngFor="let x of sizes" [value]="x.ID">{{x.Name}}</option>
+              </select>
+              <small [hidden]="sizeId.valid || (sizeId.pristine && !quantityForm.submitted)" class="text-danger">
+                Bạn phải nhập cỡ
+              </small>
+            </div>
+            <div class="col-xs-2">
+              <label>Số lượng</label>
+              <input class="form-control" type="number" #quantity="ngModel" name="quantity"
+                [(ngModel)]="quantityEntity.Quantity" required>
+              <small [hidden]="quantity.valid || (quantity.pristine && !quantityForm.submitted)" class="text-danger">
+                Bạn phải nhập số lượng
+              </small>
+            </div>
+            <div class="col-xs-4">
+              <button type="submit" [disabled]="!quantityForm.valid" class="btn btn-primary mt-24">Thêm</button>
+            </div>
+          </div>
+        </form>
+        <table class="table" *ngIf="productQuantities && productQuantities.length > 0">
+          <thead>
+            <tr>
+              <th>
+                Màu sắc
+              </th>
+              <th>
+                Kích thước
+              </th>
+              <th>Số lượng</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of productQuantities">
+              <td>
+                {{item.Color.Name}}
+              </td>
+              <td>
+                {{item.Size.Name}}
+              </td>
+              <td>{{item.Quantity}}</td>
+              <td>
+                <button class="btn btn-danger" data-toggle="tooltip" data-placement="top" title="Xóa số lượng"
+                  (click)="deleteQuantity(item.ProductId,item.ColorId,item.SizeId)"><i class="fa fa-trash"
+                    aria-hidden="true"></i></button>
               </td>
             </tr>
           </tbody>
