@@ -16,7 +16,7 @@ export class SidebarMenuComponent implements OnInit {
 
   ngOnInit() {
     this.dataService.get('/api/function/getlisthierarchy').subscribe((response: any[]) => {
-      console.log(response);
+      // console.log(response);
       this.functions = response.sort((n1, n2) => {
         if (n1.DisplayOrder > n2.DisplayOrder)
           return 1;

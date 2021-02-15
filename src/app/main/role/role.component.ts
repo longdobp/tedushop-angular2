@@ -32,8 +32,8 @@ export class RoleComponent implements OnInit {
     private _utilityService: UtilityService,
     public _authenService: AuthenService
   ) {
-    if (_authenService.checkAccess('FUNCTION') == false) {
-      _utilityService.navigateToLogin();
+    if (_authenService.checkAccess('ROLE') == false) {
+      _utilityService.navigate('/');
     }
   }
 
@@ -102,10 +102,11 @@ export class RoleComponent implements OnInit {
     })
       .then((result) => {
         if (result) {
-          this._dataService.delete('/api/appRole/delete', 'id', id).subscribe((res: Response) => {
-            this._notificationService.printSuccessMessage(MessageContstants.DELETED_OK_MSG);
-            this.loadData();
-          });
+          this._dataService.delete('/api/appRole/delete', 'id', id)
+            .subscribe((res: Response) => {
+              this._notificationService.printSuccessMessage(MessageContstants.DELETED_OK_MSG);
+              this.loadData();
+            }, error => this._dataService.handleError(error));
         } else {
           this._notificationService.printErrorMessage(MessageContstants.DELETED_CANCEL_MSG);
         }

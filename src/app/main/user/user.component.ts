@@ -22,7 +22,7 @@ export class UserComponent implements OnInit {
 
   @ViewChild('modalAddEdit') public modalAddEdit: ModalDirective;
   @ViewChild('avatar') avatar;
-  
+
   public pageIndex: number = 1;
   public pageSize: number = 25;
   public filter: string = '';
@@ -52,9 +52,9 @@ export class UserComponent implements OnInit {
     private _uploadService: UploadService,
     private _utilityService: UtilityService,
     public _authenService: AuthenService
-  ) { 
+  ) {
     if (_authenService.checkAccess('USER') == false) {
-      _utilityService.navigateToLogin();
+      _utilityService.navigate('/');
     }
   }
 
@@ -116,7 +116,7 @@ export class UserComponent implements OnInit {
       this.entity.Roles = this.myRoles;
       let fi = this.avatar.nativeElement;
       if (fi.files.length > 0) {
-        this._uploadService.postWithFile('/api/upload/saveImage', null, fi.files)
+        this._uploadService.postWithFile('/api/upload/saveImage?type=avatar', null, fi.files)
           .then((imageUrl: string) => {
 
             this.entity.Avatar = imageUrl;
@@ -131,7 +131,7 @@ export class UserComponent implements OnInit {
 
   private saveData() {
     if (this.entity.Id == undefined) {
-      console.log(this.entity);
+      // console.log(this.entity);
       this._dataService.post('/api/appUser/add', JSON.stringify(this.entity))
         .subscribe((res: any) => {
           this.loadData();
@@ -139,7 +139,7 @@ export class UserComponent implements OnInit {
           this._notificationService.printSuccessMessage(MessageContstants.CREATED_OK_MSG);
         }, error => this._dataService.handleError(error));
     } else {
-      console.log(JSON.stringify(this.entity));
+      // console.log(JSON.stringify(this.entity));
       this._dataService.put('/api/appUser/update', JSON.stringify(this.entity))
         .subscribe((res: any) => {
           this.loadData();
@@ -152,16 +152,15 @@ export class UserComponent implements OnInit {
   deleteItem(id: any) {
     swal(MessageContstants.CONFIRM_DELETE_MSG, {
       buttons: ["No", "Yes"],
-    })
-      .then((result) => {
-        if (result) {
-          this._dataService.delete('/api/appUser/delete', 'id', id).subscribe((res: Response) => {
-            this._notificationService.printSuccessMessage(MessageContstants.DELETED_OK_MSG);
-            this.loadData();
-          });
-        } else {
-          this._notificationService.printErrorMessage(MessageContstants.DELETED_CANCEL_MSG);
-        }
-      });
+    }).then((result) => {
+      if (result) {
+        this._dataService.delete('/api/appUser/delete', 'id', id).subscribe((res: Response) => {
+          this._notificationService.printSuccessMessage(MessageContstants.DELETED_OK_MSG);
+          this.loadData();
+        }, error => this._dataService.handleError(error));
+      } else {
+        this._notificationService.printErrorMessage(MessageContstants.DELETED_CANCEL_MSG);
+      }
+    });
   }
 }

@@ -31,7 +31,7 @@ export class FunctionComponent implements OnInit {
     public _authenService: AuthenService
   ) { 
     if (_authenService.checkAccess('FUNCTION') == false) {
-      utilityService.navigateToLogin();
+      utilityService.navigate('/');
     }
   }
 
