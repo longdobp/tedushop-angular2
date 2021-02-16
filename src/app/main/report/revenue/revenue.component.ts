@@ -1,20 +1,17 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { BaseChartDirective } from 'ng2-charts/ng2-charts';
 import { DataService } from '../../../core/services/data.service';
-
+import { BaseChartDirective } from 'ng2-charts/ng2-charts';
 @Component({
   selector: 'app-revenue',
   templateUrl: './revenue.component.html',
   styleUrls: ['./revenue.component.css']
 })
 export class RevenueComponent implements OnInit {
-
   public fromDate: string = '';
   public toDate: string = '';
   public tableData: any[];
-
-  constructor(private _dataService: DataService) { }
-
+  constructor(private _dataService: DataService) {
+  }
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
   // lineChart
   public lineChartData: Array<any> = [
@@ -64,11 +61,9 @@ export class RevenueComponent implements OnInit {
   public chartHovered(e: any): void {
     console.log(e);
   }
-
   ngOnInit() {
     this.loadRevenues();
   }
-
   refreshChart() {
     setTimeout(() => {
 
@@ -79,7 +74,6 @@ export class RevenueComponent implements OnInit {
       }
     });
   }
-
   loadRevenues() {
     this._dataService.get('/api/statistic/getrevenue?fromDate=' + this.fromDate + '&toDate=' + this.toDate)
       .subscribe((response: any[]) => {
@@ -98,8 +92,10 @@ export class RevenueComponent implements OnInit {
         }
         this.lineChartData.push(revenue);
         this.lineChartData.push(benefit);
-
+        console.log(this.tableData);
         this.refreshChart();
       });
+
   }
-}
+
+} 
