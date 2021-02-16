@@ -6,6 +6,7 @@ import { ModalDirective } from 'ngx-bootstrap';
 import { MessageContstants } from '../../core/common/message.constant';
 import swal from 'sweetalert';
 import { AuthenService } from 'app/core/services/authen.service';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-function',
@@ -59,8 +60,8 @@ export class FunctionComponent implements OnInit {
       }, error => this.dataService.handleError(error));
   }
 
-  public savePermission(valid: boolean, _permission: any[]) {
-    if (valid) {
+  public savePermission(form: NgForm, _permission: any[]) {
+    if (form.valid) {
       var data = {
         Permissions: this._permission,
         FunctionId: this.functionId
@@ -70,6 +71,7 @@ export class FunctionComponent implements OnInit {
         .subscribe((res: any) => {
           this.notificationService.printSuccessMessage(res);
           this.permissionModal.hide();
+          form.resetForm();
         }, error => this.dataService.handleError(error));
     }
   }
@@ -90,13 +92,14 @@ export class FunctionComponent implements OnInit {
       }, error => this.dataService.handleError(error));
   }
 
-  public saveChanges(valid: boolean) {
-    if (valid) {
+  public saveChanges(form: NgForm) {
+    if (form.valid) {
       if (this.editFlag == false) {
         this.dataService.post('/api/function/add', JSON.stringify(this.entity))
           .subscribe((res: any) => {
             this.search();
             this.addEditModal.hide();
+            form.resetForm();
             this.notificationService.printSuccessMessage(MessageContstants.CREATED_OK_MSG);
           }, error => this.dataService.handleError(error));
       } else {
@@ -104,6 +107,7 @@ export class FunctionComponent implements OnInit {
           .subscribe((res: any) => {
             this.search();
             this.addEditModal.hide();
+            form.resetForm();
             this.notificationService.printSuccessMessage(MessageContstants.UPDATED_OK_MSG);
           }, error => this.dataService.handleError(error));
       }

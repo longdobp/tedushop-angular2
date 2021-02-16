@@ -64,12 +64,12 @@
       </div>
       <div class="modal-body">
         <form class="form-horizontal form-label-left input_mask" novalidate #addEditForm="ngForm"
-          (ngSubmit)="saveChanges(addEditForm.valid)" *ngIf="entity">
+          (ngSubmit)="saveChanges(addEditForm)" *ngIf="entity">
           <div class="form-group">
             <label class="control-label col-md-3 col-sm-3 col-xs-12">Mã chức năng</label>
             <div class="col-md-9 col-sm-9 col-xs-12">
               <input type="hidden" [(ngModel)]="entity.ID" name="id" />
-              <input type="text" #id="ngModel" [disabled]="editFlg" [(ngModel)]="entity.ID" required name="id"
+              <input type="text" #id="ngModel" [disabled]="editFlag" [(ngModel)]="entity.ID" required name="id"
                 class="form-control" />
               <small [hidden]="id.valid || (id.pristine && !addEditForm.submitted)" class="text-danger">
                 Bạn phải nhập mã chức năng
@@ -161,7 +161,7 @@
       </div>
       <div class="modal-body">
         <form class="form-horizontal form-label-left input_mask" novalidate #permissionForm="ngForm"
-          (ngSubmit)="savePermission(permissionForm.valid,_permission)">
+          (ngSubmit)="savePermission(permissionForm,_permission)">
           <table class="table">
             <thead>
               <tr>

@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { IMultiSelectOption } from 'angular-2-dropdown-multiselect';
 import { NotificationService } from '../../core/services/notification.service';
 import { ModalDirective } from 'ngx-bootstrap/modal';
@@ -111,8 +112,13 @@ export class UserComponent implements OnInit {
     this.modalAddEdit.show();
   }
 
-  saveChange(valid: boolean) {
-    if (valid) {
+  hideModal(form: NgForm){
+    this.modalAddEdit.hide();
+    form.resetForm();
+  }
+
+  saveChange(form: NgForm) {
+    if (form.valid) {
       this.entity.Roles = this.myRoles;
       let fi = this.avatar.nativeElement;
       if (fi.files.length > 0) {
@@ -121,21 +127,22 @@ export class UserComponent implements OnInit {
 
             this.entity.Avatar = imageUrl;
           }).then(() => {
-            this.saveData();
+            this.saveData(form);
           });
       } else {
-        this.saveData();
+        this.saveData(form);
       }
     }
   }
 
-  private saveData() {
+  private saveData(from: NgForm) {
     if (this.entity.Id == undefined) {
       // console.log(this.entity);
       this._dataService.post('/api/appUser/add', JSON.stringify(this.entity))
         .subscribe((res: any) => {
           this.loadData();
           this.modalAddEdit.hide();
+          from.resetForm();
           this._notificationService.printSuccessMessage(MessageContstants.CREATED_OK_MSG);
         }, error => this._dataService.handleError(error));
     } else {
@@ -144,6 +151,7 @@ export class UserComponent implements OnInit {
         .subscribe((res: any) => {
           this.loadData();
           this.modalAddEdit.hide();
+          from.resetForm();
           this._notificationService.printSuccessMessage(MessageContstants.UPDATED_OK_MSG);
         }, error => this._dataService.handleError(error));
     }

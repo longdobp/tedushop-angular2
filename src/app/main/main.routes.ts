@@ -22,7 +22,9 @@ export const mainRoutes: Routes = [
             //localhost:4200/main/order
             { path: 'order', loadChildren: './order/order.module#OrderModule' },
             //localhost:4200/main/announcement
-            { path: 'announcement', loadChildren: './announcement/announcement.module#AnnouncementModule' }
+            { path: 'announcement', loadChildren: './announcement/announcement.module#AnnouncementModule' },
+            //localhost:4200/main/report
+            { path: 'report', loadChildren: './report/report.module#ReportModule' }
         ]
     }
 

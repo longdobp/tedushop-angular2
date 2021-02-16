@@ -6,6 +6,7 @@ import { MessageContstants } from 'app/core/common/message.constant';
 import swal from 'sweetalert';
 import { UtilityService } from '../../core/services/utility.service';
 import { AuthenService } from '../../core/services/authen.service';
+import { NgForm } from '@angular/forms';
 
 declare var alertify: any;
 
@@ -75,13 +76,14 @@ export class RoleComponent implements OnInit {
     this.modalAddEdit.show()
   }
 
-  saveChange(valid: boolean) {
-    if (valid) {
+  saveChange(form: NgForm) {
+    if (form.valid) {
       if (this.entity.Id == undefined) {
         this._dataService.post('/api/appRole/add', JSON.stringify(this.entity))
           .subscribe((res: any) => {
             this.loadData();
             this.modalAddEdit.hide();
+            form.resetForm();
             this._notificationService.printSuccessMessage(MessageContstants.CREATED_OK_MSG);
           }, error => this._dataService.handleError(error));
       }
@@ -90,6 +92,7 @@ export class RoleComponent implements OnInit {
           .subscribe((res: any) => {
             this.loadData();
             this.modalAddEdit.hide();
+            form.resetForm();
             this._notificationService.printSuccessMessage(MessageContstants.UPDATED_OK_MSG);
           }, error => this._dataService.handleError(error));
       }
