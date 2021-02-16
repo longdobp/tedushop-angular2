@@ -12,9 +12,7 @@ import { TopMenuComponent } from '../shared/top-menu/top-menu.component';
 import {FooterMenuComponent} from '../shared/footer-menu/footer-menu.component';
 import { FooterComponent } from '../shared/footer/footer.component';
 import { ProfileMenuComponent } from '../shared/profile-menu/profile-menu.component';
-import { OrderComponent } from './order/order.component';
-import { OrderAddComponent } from './order/order-add/order-add.component';
-import { OrderDetailComponent } from './order/order-detail/order-detail.component';
+import { SignalrService } from '../core/services/signalr.service';
 
 @NgModule({
   imports: [
@@ -33,7 +31,8 @@ import { OrderDetailComponent } from './order/order-detail/order-detail.componen
   ],
   providers: [
     UtilityService,
-    AuthenService
+    AuthenService,
+    SignalrService
   ]
 })
 export class MainModule { }

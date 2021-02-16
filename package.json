@@ -38,6 +38,7 @@
     "ngx-select-dropdown": "^1.5.0",
     "nprogress": "^0.2.0",
     "rxjs": "^5.1.0",
+    "signalr": "^2.2.2",
     "tinymce": "^4.6.2",
     "sweetalert": "^2.1.2",
     "zone.js": "^0.8.4"
