@@ -77,7 +77,7 @@ export class ProductComponent implements OnInit {
       + '&page=' + this.pageIndex
       + '&pageSize=' + this.pageSize
     ).subscribe((res: any) => {
-      console.log(res);
+      // console.log(res);
       this.products = res.Items;
       this.pageIndex = res.PageIndex;
       this.pageSize = res.PageSize;

@@ -15,10 +15,12 @@ export const mainRoutes: Routes = [
             { path: 'role', loadChildren: './role/role.module#RoleModule' },
             //localhost:4200/main/role
             { path: 'function', loadChildren: './function/function.module#FunctionModule' },
-            //localhost:4200/main/role/product-category
+            //localhost:4200/main/product-category
             { path: 'product-category', loadChildren: './product-category/product-category.module#ProductCategoryModule' },
-            //localhost:4200/main/role/product
-            { path: 'product', loadChildren: './product/product.module#ProductModule' }
+            //localhost:4200/main/product
+            { path: 'product', loadChildren: './product/product.module#ProductModule' },
+            //localhost:4200/main/order
+            { path: 'order', loadChildren: './order/order.module#OrderModule' }
         ]
     }
 
